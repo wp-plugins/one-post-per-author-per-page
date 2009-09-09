@@ -1,5 +1,5 @@
 === One Post Per Author Per Page ===
-Contributors: wakeless
+Contributors: wakeless,terroir
 Tags: filter posts post
 Requires at least: 2.8.4
 Tested up to: 2.8.4
