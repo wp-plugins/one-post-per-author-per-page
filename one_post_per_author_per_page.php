@@ -4,7 +4,7 @@ Plugin Name: One Post Per Author Per Page
 Plugin URI: http://wakeless.net/archive/2009/08/one-post-per-author-per-page
 Author: Michael Gall
 Author URI: http://myachinghead.net/
-Stable Tag: 0.1
+Stable Tag: 0.2
 */
 
 /*  Copyright 2009 Michael Gall (email : michael@wakeless.net)
@@ -25,20 +25,11 @@ Stable Tag: 0.1
 */
 
 
-function one_post_per_author_filt($dist) {
+global $wpdb;
+function one_post_per_author_post_where($where) {
 	global $wpdb;
 	if(!is_author() && !is_admin()) {
-		return "distinct {$wpdb->prefix}posts.post_author, ";
+		return $where .= " AND wp_posts.id = (select id from {$wpdb->prefix}posts p2 where p2.post_status = 'publish' and p2.post_author = {$wpdb->prefix}posts.post_author order by p2.post_date desc limit 0,1)";
 	}
 }
-
-function one_post_per_author_group($group) {
-	global $wpdb;
-	
-	if(!is_author() && !is_admin()) {
-		return "{$wpdb->prefix}posts.post_author";
-	}
-}
-
-add_filter("posts_groupby", "one_post_per_author_group");
-add_filter("posts_distinct", "one_post_per_author_filt");
+add_filter("posts_where_request", "one_post_per_author_post_where");
